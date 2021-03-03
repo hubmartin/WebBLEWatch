@@ -16,6 +16,24 @@
                 
         <script>
 
+            function arrayToDate(buffer)
+            {
+
+                a = new Uint8Array(buffer);
+
+                return new Date(a[0] + a[1] * 256, // year
+                                a[2] - 1, a[3],     // month, day
+                                a[4], a[5], a[6], //hours, minutes, seconds                
+                )
+            }
+
+            const b =  [229, 7, 3, 3, 18, 15, 42, 0, 220];
+            //const ab = new Uint8Array(b);
+
+            console.log(arrayToDate(b));
+
+
+
             function scan()
             {
                    navigator.bluetooth.requestDevice({
@@ -32,14 +50,17 @@
                     })
                     .then(service => {
                     // Getting Battery Level Characteristic…
+                        
                     return service.getCharacteristic(0x2a2b);
                     })
                     .then(characteristic => {
-                    // Reading Battery Level…
+                    // Reading time
+                    
                     return characteristic.readValue();
                     })
                     .then(value => {
-                    console.log(`Battery percentage is ${value.getUint8(0)}`);
+                        console.log(value);
+                        console.log(console.log(arrayToDate(value.buffer)));
                     })
                     .catch(error => { console.error(error); });
                                 }
