@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+
+        Hi
+        <input type="button" onclick="scan()" value="scan"/>
+                
+        <script>
+
+            function scan()
+            {
+                   navigator.bluetooth.requestDevice({
+                    /*filters: [{ services: ['battery_service'] }],*/
+                    //acceptAllDevices: true
+                    acceptAllDevices: true,
+                    optionalServices: [0x1805]
+                    }).then(device => {
+                        console.log(device.name);
+                        return device.gatt.connect();
+                    }).then(server => {
+                    // Getting Battery Service…
+                    return server.getPrimaryService(0x1805);
+                    })
+                    .then(service => {
+                    // Getting Battery Level Characteristic…
+                    return service.getCharacteristic(0x2a2b);
+                    })
+                    .then(characteristic => {
+                    // Reading Battery Level…
+                    return characteristic.readValue();
+                    })
+                    .then(value => {
+                    console.log(`Battery percentage is ${value.getUint8(0)}`);
+                    })
+                    .catch(error => { console.error(error); });
+                                }
+
+        </script>
+    </body>
+</html>
