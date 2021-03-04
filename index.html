@@ -7,18 +7,74 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
 
-        Hi
-        <input type="button" onclick="scan()" value="scan"/>
+        
+
+        <div class="container">
+
+        <h1>Set time with Hour Service and WebBLE</h1>
+
+        <p>WebBLE is experimental, works in Chrome, Chrome Android (maybe Opera) and sometimes you need to enable experimental functionality. Google for <a href="https://www.google.com/search?q=web+ble+chrome+enable">web ble chrome enable</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API#browser_compatibility">check other browsers for support</a>.</p>
+ 
+        <div class="row">
+            Step 1: Connect
+        </div>
+        <div class="row">
+            <input type="button" class="col no-disable" onclick="connect()" value="Connect to device" />
+        </div>
+        <div class="row pt-3">
+            Step 2: Set current time
+        </div>
+        <div class="row">
+            <input type="button" class="col" onclick="setCurrentDateTime()" value="Set current date & time" />
+        </div>
+        <div class="row pt-3">
+            Experimental tools
+        </div>
+        <div class="row">
+            <input type="button" class="col" onclick="getDate()" value="Get date" />
+            <input type="text" class="col" value="" id="inputGetDate" /> 
+        </div>
+        <div class="row">
+            <input type="button" class="col" onclick="setCustomDateTime()" value="Set custom date & time"/>
+            <input type="text" class="col" value="2015-03-25 12:28:59" id="inputCustomDate" /> 
+        </div>
+        <div class="row">
+            <input type="button" class="col" onclick="disconnect()" value="Disconnect" />
+        </div>
+
+        <div class="container pt-3">
+            <p>
+            Colleague of mine is using WebBLE in our company products so I wanted to show how easy and multiplatform it is to do a online webpage which could be
+            some kind of companion "app" to your watches.
+            </p>
+            <p>
+            I bought and use COLMI P8 with InfiniTime firmware. This page is using standard BLE <i>Hour Service</i> so it could also work with other BLE devices. This code is quick'n'dirty
+            proof-of-concept. I hope that someone will use this idea to create better application. Thanks to Javascript you can load file from disk and do an DFU update or write a file or
+            image to the SPI FLASH memory.
+            </p>
+        </div>
+
+        
+
+    </div>
                 
         <script>
 
+            var g_characteristic;
+            var g_device;
+
+            guiUpdate(false);
+/*
+            elements.forEach(element => {
+                console.log(element)
+            });*/
+
             function arrayToDate(buffer)
             {
-
                 a = new Uint8Array(buffer);
 
                 return new Date(a[0] + a[1] * 256, // year
@@ -27,14 +83,63 @@
                 )
             }
 
-            const b =  [229, 7, 3, 3, 18, 15, 42, 0, 220];
-            //const ab = new Uint8Array(b);
+            function dateToArray(date)
+            {
+                year = date.getFullYear();
+                const b =  [year % 256, year / 256, date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), 0, 220];
+                const ab = new Uint8Array(b);
+                console.log(ab);
+                return ab;
+            }
+           
 
-            console.log(arrayToDate(b));
+            function setCurrentDateTime()
+            {
+                g_characteristic.writeValue(dateToArray(new Date()));
+            }
 
+            function setCustomDateTime()
+            {
+                
+                g_characteristic.writeValue(dateToArray(new Date(document.getElementById("inputCustomDate").value)));
 
+            }
 
-            function scan()
+            function setDate()
+            {
+                const b =  [229, 7, 3, 3, 18, 15, 42, 0, 220];
+                const ab = new Uint8Array(b);
+
+                g_characteristic.writeValue(ab);
+                //writeValueWithResponse
+                //writeValueWithoutResponse
+            }
+
+            function getDate()
+            {
+                g_characteristic.readValue()
+                    .then(value => {
+                        console.log(value);
+                        console.log(console.log(arrayToDate(value.buffer)));
+                        document.getElementById("inputGetDate").value = arrayToDate(value.buffer);
+                    })
+                    .catch(error => { console.error(error); });
+            }
+
+            function guiUpdate(enabled)
+            {
+                elements = document.getElementsByTagName("input");
+                console.log(elements);
+
+                for (let item of elements)
+                {
+                    if(!item.classList.contains("no-disable"))
+                        item.disabled = !enabled;
+                }
+
+            }
+
+            function connect()
             {
                    navigator.bluetooth.requestDevice({
                     /*filters: [{ services: ['battery_service'] }],*/
@@ -42,7 +147,8 @@
                     acceptAllDevices: true,
                     optionalServices: [0x1805]
                     }).then(device => {
-                        console.log(device.name);
+                        //console.log(device.name);
+                        g_device = device;
                         return device.gatt.connect();
                     }).then(server => {
                     // Getting Battery Service…
@@ -55,15 +161,23 @@
                     })
                     .then(characteristic => {
                     // Reading time
-                    
-                    return characteristic.readValue();
+                    g_characteristic = characteristic;
+                    guiUpdate(true);
+                    //console.log(g_characteristic);
+                    //return characteristic.readValue();
                     })
-                    .then(value => {
+                    /*.then(value => {
                         console.log(value);
                         console.log(console.log(arrayToDate(value.buffer)));
-                    })
+                    })*/
                     .catch(error => { console.error(error); });
-                                }
+            }
+
+            function disconnect()
+            {
+                g_device.gatt.disconnect();
+                guiUpdate(false);
+            }
 
         </script>
     </body>
