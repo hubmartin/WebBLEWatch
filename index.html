@@ -11,11 +11,9 @@
     </head>
     <body>
 
-        
-
         <div class="container">
 
-        <h1>Set time with Hour Service and WebBLE</h1>
+        <h1>Set time with WebBLE</h1>
 
         <p>WebBLE is experimental, works in Chrome, Chrome Android (maybe Opera) and sometimes you need to enable experimental functionality. Google for <a href="https://www.google.com/search?q=web+ble+chrome+enable">web ble chrome enable</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API#browser_compatibility">check other browsers for support</a>.</p>
  
@@ -29,7 +27,7 @@
             Step 2: Set current time
         </div>
         <div class="row">
-            <input type="button" class="col" onclick="setCurrentDateTime()" value="Set current date & time" />
+            <input type="button" class="col" onclick="setCurrentDateTime()" value="Set browser local time" />
         </div>
         <div class="row pt-3">
             Experimental tools
@@ -49,16 +47,19 @@
         <div class="container pt-3">
             <p>
             Colleague of mine is using WebBLE in our company products so I wanted to show how easy and multiplatform it is to do a online webpage which could be
-            some kind of companion "app" to your watches.
+            some kind of companion "app" to your watches. I noticed that iOS doesn't have companion app yet.
             </p>
             <p>
-            I bought and use COLMI P8 with InfiniTime firmware. This page is using standard BLE <i>Hour Service</i> so it could also work with other BLE devices. This code is quick'n'dirty
-            proof-of-concept. I hope that someone will use this idea to create better application. Thanks to Javascript you can load file from disk and do an DFU update or write a file or
+            I bought and use COLMI P8 with InfiniTime firmware. This page is using standard BLE <i>Hour Service</i> so this page could also work with other BLE devices. This code is quick'n'dirty
+            proof-of-concept. I hope that someone will use this idea to create better application. Thanks to Javascript you can load file from disk and do an <a href="https://www.google.com/search?q=web+dfu">DFU update</a> or write a file or
             image to the SPI FLASH memory.
             </p>
-        </div>
 
-        
+            <p>
+                Twitter <a href="https://twitter.com/hubmartin">hubmartin</a><br />
+                Youtube <a href="https://www.youtube.com/user/hubmartin">hubmartin</a><br />
+            </p>
+        </div>
 
     </div>
                 
