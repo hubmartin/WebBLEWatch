@@ -4,6 +4,8 @@ This is hacky proof-of-concept to use WebBLE with Infinitime to set up time and 
 
 Working example and more info is on GitPages here https://hubmartin.github.io/WebBLEWatch/
 
+Video of using https://www.youtube.com/watch?v=IakiuhVDdrY
+
 # Browser
 
 This runs only in Chrome on Win/Mac/Linux and Android. You need latest chrome with enabled experimental WebBLE functionality. Just google `chrome web ble enable`.
