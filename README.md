@@ -8,7 +8,7 @@ Video of using https://www.youtube.com/watch?v=IakiuhVDdrY
 
 # Browser
 
-This runs only in Chrome on Win/Mac/Linux and Android. You need latest chrome with enabled experimental WebBLE functionality. Just google `chrome web ble enable`.
+This runs only in a Chromium-based browser (such as Chrome or Edge) on Win/Mac/Linux and Android. You need latest chrome with enabled experimental WebBLE functionality. Just google `chrome web ble enable`.
 
 # Run
 
